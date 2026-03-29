@@ -133,7 +133,7 @@ The following features are proposed for the first version of the app:
 
 ---
 
-## 🛠️ Proposed Technology Stack
+##  Proposed Technology Stack
 
 > Final technologies may change during implementation.
 
@@ -177,7 +177,7 @@ If successfully implemented, **WastinaSafety** is expected to provide the follow
 
 ---
 
-## 🔄 Proposed Workflow
+## Proposed Workflow
 
 1. Admin registers safety equipment in the system  
 2. Safety officer assigns PPE to a worker  
@@ -189,7 +189,7 @@ If successfully implemented, **WastinaSafety** is expected to provide the follow
 
 ---
 
-## 📂 Proposed Project Structure
+##  Proposed Project Structure
 
 ```bash
 WastinaSafety/
