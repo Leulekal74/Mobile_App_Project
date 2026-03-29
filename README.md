@@ -1,15 +1,4 @@
-# WastinaSafety 
 
-## Planned Mobile App Project
-
-**WastinaSafety** is a proposed mobile application designed to improve workplace safety by replacing unreliable paper-based tracking systems with a digital audit trail for personal protective equipment (PPE) and safety gear.
-
-The goal of the project is to help organizations prevent workers from using **damaged**, **expired**, or **unverified** safety equipment.  
-By digitizing PPE tracking and inspection records, the system aims to improve safety compliance and reduce workplace accidents in high-risk environments.
-
->  **Project Status:** This project is currently in the **planning and design phase**. Development has **not started yet**.
-
----
 
 ## Project Title
 **WastinaSafety**
