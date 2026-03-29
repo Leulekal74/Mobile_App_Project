@@ -1,4 +1,4 @@
-# WastinaSafety 🦺📱
+# WastinaSafety 
 
 ## Planned Mobile App Project
 
@@ -7,16 +7,16 @@
 The goal of the project is to help organizations prevent workers from using **damaged**, **expired**, or **unverified** safety equipment.  
 By digitizing PPE tracking and inspection records, the system aims to improve safety compliance and reduce workplace accidents in high-risk environments.
 
-> ⚠️ **Project Status:** This project is currently in the **planning and design phase**. Development has **not started yet**.
+>  **Project Status:** This project is currently in the **planning and design phase**. Development has **not started yet**.
 
 ---
 
-## 📌 Project Title
+## Project Title
 **WastinaSafety**
 
 ---
 
-## 👥 Group Members
+## Group Members
 
 - **Eleni Demlie** — UGR/7940/16  
 - **Haimanot Beka** — UGR/0869/13  
@@ -26,7 +26,7 @@ By digitizing PPE tracking and inspection records, the system aims to improve sa
 
 ---
 
-## 🎯 Project Objective
+##  Project Objective
 
 The main objective of **WastinaSafety** is to design and develop a mobile-based solution that can digitally manage workplace safety equipment records and reduce the risks associated with manual paper-based systems.
 
@@ -40,7 +40,7 @@ This project aims to:
 
 ---
 
-## ❗ Problem Statement
+##  Problem Statement
 
 Many workplaces still rely on **paper-based methods** to track personal protective equipment (PPE) such as helmets, gloves, boots, goggles, and safety vests.
 
@@ -57,7 +57,7 @@ Because of these limitations, there is a need for a **digital mobile solution** 
 
 ---
 
-## 💡 Proposed Solution
+## Proposed Solution
 
 **WastinaSafety** is planned as a mobile application that will allow safety officers, supervisors, and administrators to digitally track PPE and safety equipment.
 
@@ -72,37 +72,36 @@ The proposed system will help users:
 
 ---
 
-## ✨ Planned Features
+##  Planned Features
 
 The following features are proposed for the first version of the app:
 
-- 👤 **User Authentication**
+- 👤**User Authentication**
   - Secure login for admins, supervisors, and workers
-
-- 📦 **PPE Registration**
+-  **PPE Registration**
   - Add and manage safety equipment records
 
-- 👷 **Worker Assignment**
+-  **Worker Assignment**
   - Assign equipment to individual workers
 
-- 📅 **Expiry Date Tracking**
+-  **Expiry Date Tracking**
   - Monitor expiration dates of safety gear
 
-- 🛠️ **Condition Monitoring**
+-  **Condition Monitoring**
   - Mark items as active, damaged, expired, or replaced
 
-- 📝 **Inspection Records**
+- **Inspection Records**
   - Log inspection and maintenance history
 
-- 🔔 **Alerts & Notifications**
+-  **Alerts & Notifications**
   - Notify responsible staff when equipment becomes unsafe
 
-- 📊 **Audit Trail**
+-  **Audit Trail**
   - Maintain a history of actions for compliance review
 
 ---
 
-## 🏗️ Proposed Modules
+##  Proposed Modules
 
 ### 1. User Management Module
 - User registration and login
