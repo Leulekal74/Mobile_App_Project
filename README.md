@@ -19,7 +19,7 @@ A specialized ethnographic documentation platform designed for researchers and t
 | :--- | :--- | :--- |
 | **Pattern Specification Registry** | A technical database for weaving patterns (e.g., Tilf, Tibeb styles) including thread counts and geometry. | **Create:** Log new pattern designs. <br> **Read:** View technical metadata. <br> **Update:** Edit design specifications. <br> **Delete:** Remove obsolete records. |
 | **Material & Dye Records** | A specialized service for documenting yarn types and traditional natural dye recipes. | **Create:** Archive new dye formulas. <br> **Read:** Search material properties. <br> **Update:** Refine chemical/natural ratios. <br> **Delete:** Clean up duplicate entries. |
-
+| **Artisan Directory** | A profile system for traditional weavers, tracking their location and specific weaving specialties. | **Create:** Register a new artisan. <br> **Read:** Search weavers by region. <br> **Update:** Edit contact info. <br> **Delete:** Remove profiles. |
 ---
 
 ### **Technical Requirements Mapping**
