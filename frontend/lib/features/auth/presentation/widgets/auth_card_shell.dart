@@ -58,7 +58,7 @@ class AuthCardShell extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(child: Text(footerText, style: AppTheme.captionStyle.copyWith(color: AppColors.onSurfaceVariant))),
-                    if (footerAction != null) footerAction!,
+                    ?footerAction,
                   ],
                 ),
               ],
