@@ -1,68 +1,66 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/application/app_colors.dart';
-import 'package:frontend/application/app_theme.dart';
-import 'package:frontend/presentation/widgets/app_logo.dart';
-import 'package:frontend/presentation/widgets/primary_nav_bar.dart';
+
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/widgets/app_logo.dart';
 
 class AuthCardShell extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final Widget child;
-  final String footerText;
-  final Widget? footerAction;
-
   const AuthCardShell({
     super.key,
     required this.title,
     required this.subtitle,
     required this.child,
-    this.footerText = '',
-    this.footerAction,
   });
+
+  final String title;
+  final String subtitle;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: const Color(0xFFFFFEFA),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const PrimaryNavBar(),
-              const SizedBox(height: 28),
-              const Center(child: AppLogo()),
-              const SizedBox(height: 24),
-              Card(
-                elevation: 10,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-                color: AppColors.surface,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(title, style: AppTheme.headingStyle.copyWith(color: AppColors.onSurface)),
-                      const SizedBox(height: 10),
-                      Text(subtitle, style: AppTheme.bodyStyle.copyWith(color: AppColors.onSurfaceVariant)),
-                      const SizedBox(height: 22),
-                      child,
-                    ],
-                  ),
-                ),
-              ),
-              if (footerText.isNotEmpty || footerAction != null) ...[
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(child: Text(footerText, style: AppTheme.captionStyle.copyWith(color: AppColors.onSurfaceVariant))),
-                    ?footerAction,
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 380),
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(28, 26, 28, 26),
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: AppColors.stroke),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0x12000000),
+                      blurRadius: 24,
+                      offset: Offset(0, 10),
+                    ),
                   ],
                 ),
-              ],
-            ],
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const AppLogo(compact: true),
+                    const SizedBox(height: 18),
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleLarge,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      subtitle,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 24),
+                    child,
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       ),
