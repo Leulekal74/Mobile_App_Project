@@ -1,42 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/application/app_colors.dart';
-import 'package:frontend/application/app_theme.dart';
-import 'package:frontend/features/auth/presentation/widgets/auth_card_shell.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../../core/constants/app_colors.dart';
+import '../widgets/auth_card_shell.dart';
 
 class CheckEmailScreen extends StatelessWidget {
-  static const routeName = '/check-email';
-
   const CheckEmailScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return AuthCardShell(
-      title: 'Check your inbox',
-      subtitle: 'We have sent password reset instructions to your email address.',
+      title: 'Check your email',
+      subtitle: 'A password recovery link has been prepared for your inbox.',
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Icon(Icons.email_outlined, size: 68, color: AppColors.primary),
-          const SizedBox(height: 24),
-          Text(
-            'Open your email to complete the password reset process. If you do not see it, check your spam folder.',
-            textAlign: TextAlign.center,
-            style: AppTheme.bodyStyle.copyWith(color: AppColors.onSurfaceVariant),
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              color: AppColors.softYellow,
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: const Icon(
+              Icons.mark_email_read_rounded,
+              color: AppColors.brandYellowDeep,
+              size: 30,
+            ),
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 18),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: AppColors.onPrimary,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                textStyle: AppTheme.buttonTextStyle,
-              ),
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/login');
-              },
-              child: const Text('Back to login'),
+              onPressed: () => context.go('/login'),
+              child: const Text('Back to Login'),
             ),
           ),
         ],

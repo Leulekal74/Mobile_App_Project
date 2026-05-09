@@ -1,122 +1,89 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:frontend/application/app_colors.dart';
-import 'package:frontend/application/app_theme.dart';
-import 'package:frontend/features/auth/presentation/providers/auth_session.dart';
-import 'package:frontend/features/auth/presentation/widgets/auth_card_shell.dart';
-import 'package:frontend/features/auth/presentation/widgets/role_selector.dart';
+import 'package:go_router/go_router.dart';
 
-class SignupScreen extends ConsumerWidget {
-  static const routeName = '/signup';
+import '../providers/auth_session.dart';
+import '../widgets/auth_card_shell.dart';
+import '../widgets/role_selector.dart';
 
-  const SignupScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authSessionProvider);
-    final notifier = ref.read(authSessionProvider.notifier);
+  State<SignUpScreen> createState() => _SignUpScreenState();
+}
 
+class _SignUpScreenState extends State<SignUpScreen> {
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  UserRole _selectedRole = UserRole.seller;
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return AuthCardShell(
-      title: 'Create your account',
-      subtitle: 'Register as either a customer or artisan and get started in seconds.',
+      title: 'Create Account',
+      subtitle: 'Join the archive with a clean role-based sign up flow.',
       child: Column(
         children: [
-          _AuthTextField(
-            label: 'Email',
-            initialValue: authState.email,
-            hintText: 'you@example.com',
-            keyboardType: TextInputType.emailAddress,
-            onChanged: notifier.setEmail,
+          TextField(
+            controller: _nameController,
+            decoration: const InputDecoration(labelText: 'Full name'),
           ),
-          const SizedBox(height: 16),
-          _AuthTextField(
-            label: 'Password',
-            initialValue: authState.password,
-            hintText: 'At least 6 characters',
+          const SizedBox(height: 12),
+          TextField(
+            controller: _emailController,
+            decoration: const InputDecoration(labelText: 'Email'),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _passwordController,
             obscureText: true,
-            onChanged: notifier.setPassword,
+            decoration: const InputDecoration(labelText: 'Password'),
           ),
           const SizedBox(height: 16),
-          const RoleSelector(),
-          const SizedBox(height: 20),
-          if (authState.errorMessage != null) ...[
-            Text(authState.errorMessage!, style: const TextStyle(color: Colors.redAccent)),
-            const SizedBox(height: 12),
-          ],
-          if (authState.infoMessage != null) ...[
-            Text(authState.infoMessage!, style: const TextStyle(color: Colors.green)),
-            const SizedBox(height: 12),
-          ],
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Select role',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+          const SizedBox(height: 8),
+          RoleSelector(
+            selectedRole: _selectedRole,
+            onChanged: (role) => setState(() => _selectedRole = role),
+          ),
+          const SizedBox(height: 18),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: AppColors.onPrimary,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                textStyle: AppTheme.buttonTextStyle,
-              ),
-              onPressed: authState.isLoading
-                  ? null
-                  : () async {
-                      final success = await notifier.signup();
-                      if (success && context.mounted) {
-                        Navigator.pushReplacementNamed(context, '/home');
-                      }
-                    },
-              child: authState.isLoading
-                  ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                  : const Text('Sign up'),
+              onPressed: () {
+                AuthSessionScope.of(context).login(
+                  email: _emailController.text.trim().isEmpty
+                      ? 'new@tibebarchive.com'
+                      : _emailController.text.trim(),
+                  role: _selectedRole,
+                );
+                context.go('/profile');
+              },
+              child: const Text('Sign Up'),
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
           TextButton(
-            onPressed: () => Navigator.pushReplacementNamed(context, '/login'),
+            onPressed: () => context.go('/login'),
             child: const Text('Already have an account? Log in'),
           ),
         ],
       ),
-    );
-  }
-}
-
-class _AuthTextField extends StatelessWidget {
-  final String label;
-  final String initialValue;
-  final bool obscureText;
-  final String hintText;
-  final TextInputType keyboardType;
-  final ValueChanged<String> onChanged;
-
-  const _AuthTextField({
-    required this.label,
-    required this.initialValue,
-    required this.onChanged,
-    this.obscureText = false,
-    this.hintText = '',
-    this.keyboardType = TextInputType.text,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: AppTheme.inputLabelStyle),
-        const SizedBox(height: 8),
-        TextFormField(
-          initialValue: initialValue,
-          obscureText: obscureText,
-          keyboardType: keyboardType,
-          decoration: InputDecoration(
-            hintText: hintText,
-            filled: true,
-            fillColor: AppColors.inputBackground,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
-          ),
-          onChanged: onChanged,
-        ),
-      ],
     );
   }
 }
