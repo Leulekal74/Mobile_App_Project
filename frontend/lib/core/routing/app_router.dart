@@ -7,8 +7,11 @@ import '../../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/signup_screen.dart';
 import '../../features/home/presentation/screens/about_screen.dart';
+import '../../features/home/presentation/screens/faq_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
+import '../../features/home/presentation/screens/privacy_screen.dart';
 import '../../features/home/presentation/screens/registry_screen.dart';
+import '../../features/home/presentation/screens/terms_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 
 class AppRouter {
@@ -38,6 +41,18 @@ class AppRouter {
       GoRoute(
         path: '/about',
         builder: (context, state) => const AboutScreen(),
+      ),
+      GoRoute(
+        path: '/privacy',
+        builder: (context, state) => const PrivacyScreen(),
+      ),
+      GoRoute(
+        path: '/faq',
+        builder: (context, state) => const FaqScreen(),
+      ),
+      GoRoute(
+        path: '/terms',
+        builder: (context, state) => const TermsScreen(),
       ),
       GoRoute(
         path: '/login',

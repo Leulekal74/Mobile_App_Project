@@ -1,28 +1,26 @@
 import 'package:flutter/material.dart';
 
-import '../constants/app_colors.dart';
-
 class AppLogo extends StatelessWidget {
-  const AppLogo({super.key, this.compact = false});
+  const AppLogo({
+    super.key,
+    this.compact = false,
+    this.height,
+  });
 
   final bool compact;
+  final double? height;
 
   @override
   Widget build(BuildContext context) {
+    final resolvedHeight = height ?? (compact ? 28.0 : 32.0);
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          width: compact ? 26 : 32,
-          height: compact ? 26 : 32,
-          decoration: BoxDecoration(
-            color: AppColors.brandYellow,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: const Center(
-            child: Icon(Icons.auto_awesome_mosaic_rounded,
-                size: 18, color: Colors.white),
-          ),
+        Image.asset(
+          'assets/images/logo.png',
+          height: resolvedHeight,
+          fit: BoxFit.contain,
         ),
         const SizedBox(width: 10),
         Text(
@@ -30,7 +28,7 @@ class AppLogo extends StatelessWidget {
           style: TextStyle(
             fontWeight: FontWeight.w800,
             fontSize: compact ? 18 : 20,
-            color: AppColors.brandYellowDeep,
+            color: const Color(0xFFE0A300),
           ),
         ),
       ],

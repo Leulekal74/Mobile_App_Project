@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/primary_nav_bar.dart';
+import '../../../../core/widgets/site_footer.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -22,7 +23,6 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   const PrimaryNavBar(currentRoute: '/'),
                   const SizedBox(height: 34),
-
                   wide
                       ? const Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -39,9 +39,8 @@ class HomeScreen extends StatelessWidget {
                             _HeroCopyPanel(),
                           ],
                         ),
-
                   const SizedBox(height: 44),
-                  const _FooterSection(),
+                  const SiteFooter(),
                 ],
               ),
             ),
@@ -172,7 +171,6 @@ class _HeroCopyPanel extends StatelessWidget {
           style: theme.textTheme.bodyLarge,
         ),
         const SizedBox(height: 30),
-
         Wrap(
           spacing: 22,
           runSpacing: 12,
@@ -188,9 +186,7 @@ class _HeroCopyPanel extends StatelessWidget {
             ),
           ],
         ),
-
         const SizedBox(height: 26),
-
         ElevatedButton(
           onPressed: () => context.go('/registry'),
           child: const Text('Explore Registry'),
@@ -217,115 +213,6 @@ class _TrustItem extends StatelessWidget {
           label,
           style: const TextStyle(color: AppColors.textMuted, fontSize: 13),
         ),
-      ],
-    );
-  }
-}
-
-class _FooterSection extends StatelessWidget {
-  const _FooterSection();
-
-  @override
-  Widget build(BuildContext context) {
-    final stacked = MediaQuery.of(context).size.width < 720;
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(28, 28, 28, 20),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: AppColors.stroke),
-      ),
-      child: stacked
-          ? const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _FooterBrand(),
-                SizedBox(height: 24),
-                _FooterSupport(),
-              ],
-            )
-          : const Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(child: _FooterBrand()),
-                SizedBox(width: 30),
-                _FooterSupport(),
-              ],
-            ),
-    );
-  }
-}
-
-class _FooterBrand extends StatelessWidget {
-  const _FooterBrand();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'TibebArchive',
-          style: TextStyle(
-            color: AppColors.brandYellowDeep,
-            fontWeight: FontWeight.w800,
-            fontSize: 32,
-            fontStyle: FontStyle.italic,
-          ),
-        ),
-        const SizedBox(height: 10),
-        const Text(
-          'Your trusted home partner',
-          style: TextStyle(color: AppColors.textMuted),
-        ),
-        const SizedBox(height: 14),
-
-        Row(
-          children: const [
-            Icon(Icons.camera_alt_outlined),
-            SizedBox(width: 10),
-            Icon(Icons.send_outlined),
-            SizedBox(width: 10),
-            Icon(Icons.call_outlined),
-            SizedBox(width: 10),
-            Icon(Icons.facebook_outlined),
-          ],
-        ),
-
-        const SizedBox(height: 24),
-        const Text(
-          '© 2026 TibebArchive | Addis Ababa, Ethiopia',
-          style: TextStyle(color: AppColors.textMuted),
-        ),
-      ],
-    );
-  }
-}
-
-class _FooterSupport extends StatelessWidget {
-  const _FooterSupport();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'SUPPORT',
-          style: TextStyle(
-            fontWeight: FontWeight.w800,
-            fontSize: 24,
-            color: AppColors.textPrimary,
-          ),
-        ),
-        SizedBox(height: 14),
-        Text('• Privacy', style: TextStyle(color: AppColors.textMuted)),
-        SizedBox(height: 8),
-        Text('• FAQ', style: TextStyle(color: AppColors.textMuted)),
-        SizedBox(height: 8),
-        Text('• Terms', style: TextStyle(color: AppColors.textMuted)),
       ],
     );
   }
