@@ -29,3 +29,9 @@ A specialized ethnographic documentation platform designed for researchers and t
 * **Backend:** Powered by a **locally hosted REST API** and database. No third-party hosting or Firebase is utilized, meeting the strict local-hosting requirement.
 * **Testing Protocol:** Includes comprehensive **Unit, Widget, and Integration tests** to ensure the integrity of the archive data.
 * **Project Scope:** This is a niche cultural preservation tool, strictly avoiding common categories like E-commerce, Blogs, or Todo lists.
+* ## Installation & Setup
+
+### Frontend
+1. Navigate to the `frontend` directory.
+2. Run `flutter pub get` to install dependencies.
+3. Run `flutter run` to launch the application.
