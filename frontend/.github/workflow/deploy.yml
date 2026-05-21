@@ -1,0 +1,22 @@
+name: Deploy Flutter Web
+on:
+  push:
+    branches:
+      - main  # Runs every time you push to main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - run: |
+          cd frontend
+          flutter build web --release --base-href "/Mobile_App_Project/"
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./frontend/build/web
