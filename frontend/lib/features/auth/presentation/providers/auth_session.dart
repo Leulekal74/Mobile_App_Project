@@ -1,45 +1,33 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
-enum UserRole { admin, buyer, seller }
-
-class AuthSession extends ChangeNotifier {
-  bool _isLoggedIn = false;
-  String _email = '';
-  UserRole _role = UserRole.buyer;
-
-  bool get isLoggedIn => _isLoggedIn;
-  String get email => _email;
-  UserRole get role => _role;
-
-  void login({
-    required String email,
-    required UserRole role,
-  }) {
-    _isLoggedIn = true;
-    _email = email;
-    _role = role;
-    notifyListeners();
-  }
-
-  void logout() {
-    _isLoggedIn = false;
-    _email = '';
-    _role = UserRole.buyer;
-    notifyListeners();
-  }
+/// Lightweight application session scope used by the router.
+///
+/// This provider file is intentionally separate from the domain auth session
+/// entity so the application shell can manage routing state independently.
+class AuthSession {
+  const AuthSession();
 }
 
-class AuthSessionScope extends InheritedNotifier<AuthSession> {
+/// Inherited widget providing the active auth session to descendants.
+class AuthSessionScope extends InheritedWidget {
   const AuthSessionScope({
     super.key,
-    required AuthSession session,
-    required Widget child,
-  }) : super(notifier: session, child: child);
+    required this.session,
+    required super.child,
+  });
 
-  static AuthSession of(BuildContext context) {
-    final scope =
-        context.dependOnInheritedWidgetOfExactType<AuthSessionScope>();
-    assert(scope != null, 'AuthSessionScope not found in widget tree.');
-    return scope!.notifier!;
+  final AuthSession session;
+
+  static AuthSessionScope of(BuildContext context) {
+    final scope = context.dependOnInheritedWidgetOfExactType<AuthSessionScope>();
+    if (scope == null) {
+      throw FlutterError('AuthSessionScope not found in context');
+    }
+    return scope;
+  }
+
+  @override
+  bool updateShouldNotify(covariant AuthSessionScope oldWidget) {
+    return session != oldWidget.session;
   }
 }
