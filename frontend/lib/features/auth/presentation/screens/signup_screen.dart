@@ -1,205 +1,101 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../application/auth_controller.dart';
 import '../../domain/entities/app_user.dart';
 import '../widgets/auth_card_shell.dart';
 import '../widgets/role_selector.dart';
 
-final signupNameProvider = StateProvider<String?>((ref) => null);
-final signupEmailProvider = StateProvider<String?>((ref) => null);
-final signupPasswordProvider = StateProvider<String?>((ref) => null);
-final signupConfirmPasswordProvider = StateProvider<String?>((ref) => null);
-final signupRoleProvider = StateProvider<String?>((ref) => null);
+class SignUpScreen extends ConsumerStatefulWidget {
+  const SignUpScreen({super.key});
 
-class SignupScreen extends StatelessWidget {
-  SignupScreen({super.key});
+  @override
+  ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
+}
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+class _SignUpScreenState extends ConsumerState<SignUpScreen> {
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  UserRole _selectedRole = UserRole.seller;
 
-  String _passwordStrengthLabel(String password) {
-    if (password.length >= 12) {
-      return 'Strong';
-    }
-    if (password.length >= 8) {
-      return 'Medium';
-    }
-    return 'Weak';
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
-  void _showSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+  Future<void> _submit() async {
+    try {
+      await ref.read(authControllerProvider.notifier).signup(
+            name: _nameController.text.trim(),
+            email: _emailController.text.trim(),
+            password: _passwordController.text.trim(),
+            role: _selectedRole,
+          );
+      if (mounted) context.go('/profile');
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error.toString().replaceFirst('Exception: ', ''))),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: SafeArea(
-          child: Consumer(
-            builder: (context, ref, child) {
-              final authState = ref.watch(authStateProvider);
-              final authController = ref.read(authStateProvider.notifier);
-              final email = ref.watch(signupEmailProvider) ?? '';
-              final password = ref.watch(signupPasswordProvider) ?? '';
-              final role = ref.watch(signupRoleProvider);
+    final authState = ref.watch(authControllerProvider);
 
-              if (authState.status == AuthStatus.error &&
-                  authState.errorMessage != null) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  _showSnackBar(context, authState.errorMessage!);
-                });
-              }
-
-              if (authState.isAuthenticated) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  _showSnackBar(context, 'Account created successfully!');
-                  Navigator.of(context).pushReplacementNamed('/home');
-                });
-              }
-
-              return Center(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-                  child: AuthCardShell(
-                    title: 'Create your account',
-                    isLoading: authState.isLoading,
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          TextFormField(
-                            keyboardType: TextInputType.name,
-                            textInputAction: TextInputAction.next,
-                            decoration: const InputDecoration(
-                              labelText: 'Name',
-                              hintText: 'John Doe',
-                            ),
-                            validator: AuthController.validateName,
-                            onChanged: (value) =>
-                                ref.read(signupNameProvider.notifier).state = value,
-                          ),
-                          const SizedBox(height: 16),
-                          TextFormField(
-                            keyboardType: TextInputType.emailAddress,
-                            textInputAction: TextInputAction.next,
-                            decoration: const InputDecoration(
-                              labelText: 'Email',
-                              hintText: 'name@example.com',
-                            ),
-                            validator: AuthController.validateEmail,
-                            onChanged: (value) =>
-                                ref.read(signupEmailProvider.notifier).state = value,
-                          ),
-                          const SizedBox(height: 16),
-                          TextFormField(
-                            obscureText: true,
-                            textInputAction: TextInputAction.next,
-                            decoration: const InputDecoration(
-                              labelText: 'Password',
-                            ),
-                            validator: AuthController.validatePassword,
-                            onChanged: (value) =>
-                                ref.read(signupPasswordProvider.notifier).state = value,
-                          ),
-                          if (password.isNotEmpty) ...[
-                            const SizedBox(height: 8),
-                            Text(
-                              'Password strength: ${_passwordStrengthLabel(password)}',
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                          ],
-                          const SizedBox(height: 16),
-                          TextFormField(
-                            obscureText: true,
-                            textInputAction: TextInputAction.done,
-                            decoration: const InputDecoration(
-                              labelText: 'Confirm Password',
-                            ),
-                            validator: (value) {
-                              final confirmValue = value ?? '';
-                              if (confirmValue.isEmpty) {
-                                return 'Please confirm your password.';
-                              }
-                              if (confirmValue != password) {
-                                return 'Passwords do not match.';
-                              }
-                              return null;
-                            },
-                            onChanged: (value) => ref
-                                .read(signupConfirmPasswordProvider.notifier)
-                                .state = value,
-                          ),
-                          const SizedBox(height: 16),
-                          RoleSelector(
-                            initialValue: role,
-                            onRoleChanged: (selectedRole) {
-                              ref
-                                  .read(signupRoleProvider.notifier)
-                                  .state = selectedRole;
-                            },
-                          ),
-                          const SizedBox(height: 24),
-                          ElevatedButton(
-                            onPressed: authState.isLoading
-                                ? null
-                                : () async {
-                                    FocusScope.of(context).unfocus();
-                                    final formState = _formKey.currentState;
-                                    if (formState == null) {
-                                      return;
-                                    }
-                                    if (!formState.validate()) {
-                                      return;
-                                    }
-                                    if (role == null || role.isEmpty) {
-                                      _showSnackBar(context, 'Please select a role.');
-                                      return;
-                                    }
-
-                                    await authController.signup(
-                                      email: email.trim(),
-                                      password: password,
-                                      name: ref.read(signupNameProvider)!.trim(),
-                                      role: role == 'artisan'
-                                          ? UserRole.artisan
-                                          : UserRole.viewer,
-                                    );
-
-                                    if (ref.read(authStateProvider).isAuthenticated) {
-                                      formState.reset();
-                                      ref.read(signupNameProvider.notifier).state = null;
-                                      ref.read(signupEmailProvider.notifier).state = null;
-                                      ref.read(signupPasswordProvider.notifier).state = null;
-                                      ref.read(signupConfirmPasswordProvider.notifier).state = null;
-                                      ref.read(signupRoleProvider.notifier).state = null;
-                                    }
-                                  },
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 14),
-                              child: Text('Sign up'),
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pushReplacementNamed('/login');
-                            },
-                            child: const Text('Already have an account? Log in'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
+    return AuthCardShell(
+      title: 'Create Account',
+      subtitle: 'Register with the local API and persist your session in cache.',
+      child: Column(
+        children: [
+          TextField(
+            controller: _nameController,
+            decoration: const InputDecoration(labelText: 'Full name'),
           ),
-        ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _emailController,
+            decoration: const InputDecoration(labelText: 'Email'),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _passwordController,
+            obscureText: true,
+            decoration: const InputDecoration(labelText: 'Password'),
+          ),
+          const SizedBox(height: 16),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Select role',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+          const SizedBox(height: 8),
+          RoleSelector(
+            selectedRole: _selectedRole,
+            onChanged: (role) => setState(() => _selectedRole = role),
+          ),
+          const SizedBox(height: 18),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: authState.isLoading ? null : _submit,
+              child: Text(authState.isLoading ? 'Creating...' : 'Sign Up'),
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextButton(
+            onPressed: () => context.go('/login'),
+            child: const Text('Already have an account? Log in'),
+          ),
+        ],
       ),
     );
   }

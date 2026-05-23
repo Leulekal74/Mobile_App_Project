@@ -1,152 +1,101 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../application/auth_controller.dart';
+import '../../domain/entities/app_user.dart';
 import '../widgets/auth_card_shell.dart';
+import '../widgets/role_selector.dart';
 
-/// Local provider used only for managing the "Remember me" checkbox state.
-final loginRememberMeProvider = StateProvider<bool>((ref) => false);
+class LoginScreen extends ConsumerStatefulWidget {
+  const LoginScreen({super.key});
 
-class LoginScreen extends StatelessWidget {
-  LoginScreen({super.key});
+  @override
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+}
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+class _LoginScreenState extends ConsumerState<LoginScreen> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  UserRole _selectedRole = UserRole.buyer;
 
-  void _showMessage(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    try {
+      await ref.read(authControllerProvider.notifier).login(
+            email: _emailController.text.trim(),
+            password: _passwordController.text.trim(),
+          );
+      if (mounted) context.go('/profile');
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error.toString().replaceFirst('Exception: ', ''))),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: SafeArea(
-          child: Consumer(
-            builder: (context, ref, child) {
-              final authState = ref.watch(authStateProvider);
-              final authController = ref.read(authStateProvider.notifier);
-              final rememberMe = ref.watch(loginRememberMeProvider);
+    final authState = ref.watch(authControllerProvider);
 
-              if (authState.status == AuthStatus.error &&
-                  authState.errorMessage != null) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  _showMessage(context, authState.errorMessage!);
-                });
-              }
-
-              if (authState.isAuthenticated) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  Navigator.of(context).pushReplacementNamed('/home');
-                });
-              }
-
-              String email = '';
-              String password = '';
-
-              return Center(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-                  child: AuthCardShell(
-                    title: 'Welcome Back',
-                    isLoading: authState.isLoading,
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          TextFormField(
-                            keyboardType: TextInputType.emailAddress,
-                            textInputAction: TextInputAction.next,
-                            decoration: const InputDecoration(
-                              labelText: 'Email',
-                              hintText: 'name@example.com',
-                            ),
-                            validator: AuthController.validateEmail,
-                            onSaved: (value) {
-                              email = value?.trim() ?? '';
-                            },
-                            onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
-                          ),
-                          const SizedBox(height: 16),
-                          TextFormField(
-                            obscureText: true,
-                            textInputAction: TextInputAction.done,
-                            decoration: const InputDecoration(
-                              labelText: 'Password',
-                            ),
-                            validator: AuthController.validatePassword,
-                            onSaved: (value) {
-                              password = value ?? '';
-                            },
-                            onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
-                          ),
-                          const SizedBox(height: 16),
-                          CheckboxListTile(
-                            title: const Text('Remember me'),
-                            value: rememberMe,
-                            contentPadding: EdgeInsets.zero,
-                            onChanged: (value) {
-                              if (value != null) {
-                                ref.read(loginRememberMeProvider.notifier).state = value;
-                              }
-                            },
-                          ),
-                          const SizedBox(height: 24),
-                          ElevatedButton(
-                            onPressed: authState.isLoading
-                                ? null
-                                : () async {
-                                    FocusScope.of(context).unfocus();
-                                    final formState = _formKey.currentState;
-                                    if (formState == null) {
-                                      return;
-                                    }
-
-                                    if (!formState.validate()) {
-                                      return;
-                                    }
-
-                                    formState.save();
-                                    await authController.login(email, password);
-
-                                    if (ref.read(authStateProvider).isAuthenticated) {
-                                      formState.reset();
-                                      ref.read(loginRememberMeProvider.notifier).state = false;
-                                    }
-                                  },
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 14),
-                              child: Text('Login'),
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pushNamed('/forgot-password');
-                            },
-                            child: const Text('Forgot password?'),
-                          ),
-                          const SizedBox(height: 8),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pushNamed('/signup');
-                            },
-                            child: const Text('Create account'),
-                          ),
-                          // Guest login is not included to keep this screen focused
-                          // on authenticated email/password access only.
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
+    return AuthCardShell(
+      title: 'Welcome Back',
+      subtitle: 'Log in to manage textile records with role-based access.',
+      child: Column(
+        children: [
+          TextField(
+            controller: _emailController,
+            decoration: const InputDecoration(labelText: 'Email'),
           ),
-        ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _passwordController,
+            obscureText: true,
+            decoration: const InputDecoration(labelText: 'Password'),
+          ),
+          const SizedBox(height: 16),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Role preview',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+          const SizedBox(height: 8),
+          RoleSelector(
+            selectedRole: _selectedRole,
+            onChanged: (role) => setState(() => _selectedRole = role),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Your server account role will be used after login.',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          const SizedBox(height: 18),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: authState.isLoading ? null : _submit,
+              child: Text(authState.isLoading ? 'Signing In...' : 'Sign In'),
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextButton(
+            onPressed: () => context.go('/forgot-password'),
+            child: const Text('Forgot password?'),
+          ),
+          TextButton(
+            onPressed: () => context.go('/signup'),
+            child: const Text('Need an account? Sign up'),
+          ),
+        ],
       ),
     );
   }

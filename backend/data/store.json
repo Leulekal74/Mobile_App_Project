@@ -1,0 +1,92 @@
+{
+  "users": [
+    {
+      "id": "u-admin",
+      "name": "Archive Admin",
+      "email": "admin@test.com",
+      "password": "1234",
+      "role": "admin"
+    },
+    {
+      "id": "u-seller",
+      "name": "Workshop Seller",
+      "email": "seller@test.com",
+      "password": "1234",
+      "role": "seller"
+    },
+    {
+      "id": "u-buyer",
+      "name": "Textile Buyer",
+      "email": "buyer@test.com",
+      "password": "1234",
+      "role": "buyer"
+    },
+    {
+      "id": "u-518e5e25",
+      "name": "leu",
+      "email": "byer@test.com",
+      "password": "1234",
+      "role": "seller"
+    }
+  ],
+  "patterns": [
+    {
+      "id": "p-001",
+      "name": "Tibeb Border Matrix",
+      "region": "Gojjam",
+      "technique": "Supplementary weft",
+      "description": "Repeating edge motif documented from handloom field notes.",
+      "threadCount": "24 epi",
+      "ownerId": "u-seller"
+    },
+    {
+      "id": "p-002",
+      "name": "Axum Diamond Weave",
+      "region": "Tigray",
+      "technique": "Balanced plain weave",
+      "description": "Geometric pattern study with narrow border variation.",
+      "threadCount": "20 epis",
+      "ownerId": "u-seller"
+    }
+  ],
+  "dyes": [
+    {
+      "id": "d-001",
+      "name": "Kosso Bark Yellow",
+      "sourceMaterial": "Kosso bark",
+      "region": "Shewa",
+      "formula": "Simmer bark powder for 45 minutes, strain, then soak yarn.",
+      "notes": "Works best on pre-mordanted cotton thread.",
+      "ownerId": "u-seller"
+    },
+    {
+      "id": "d-002",
+      "name": "Turmeric Accent Wash",
+      "sourceMaterial": "Turmeric root",
+      "region": "Harar",
+      "formula": "Warm bath with mild mordant for lightweight yellow accents.",
+      "notes": "Recommended for decorative border highlights.",
+      "ownerId": "u-seller"
+    }
+  ],
+  "artisans": [
+    {
+      "id": "a-001",
+      "name": "Mulu Tesfaye",
+      "specialty": "Traditional Tibeb finishing",
+      "region": "Addis Ababa",
+      "experienceYears": 18,
+      "bio": "Master artisan specializing in ceremonial cloth borders.",
+      "ownerId": "u-seller"
+    },
+    {
+      "id": "a-002",
+      "name": "Bereket Alemu",
+      "specialty": "Natural dye preparation",
+      "region": "Bahir Dar",
+      "experienceYears": 11,
+      "bio": "Documents plant-based dye workflows for student apprentices.",
+      "ownerId": "u-seller"
+    }
+  ]
+}
