@@ -1,92 +1,49 @@
 import 'package:flutter/material.dart';
 
-/// Dropdown field for selecting an account role.
-///
-/// Only `artisan` and `viewer` roles are available for selection.
-class RoleSelector extends StatefulWidget {
+import '../../../../core/constants/app_colors.dart';
+import '../../domain/entities/app_user.dart';
+
+class RoleSelector extends StatelessWidget {
   const RoleSelector({
     super.key,
-    required this.onRoleChanged,
-    this.initialValue,
-    this.labelText = 'Role',
+    required this.selectedRole,
+    required this.onChanged,
   });
 
-  final ValueChanged<String> onRoleChanged;
-  final String? initialValue;
-  final String labelText;
-
-  @override
-  State<RoleSelector> createState() => _RoleSelectorState();
-}
-
-class _RoleSelectorState extends State<RoleSelector> {
-  String? _selectedRole;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedRole = widget.initialValue;
-  }
-
-  @override
-  void didUpdateWidget(covariant RoleSelector oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.initialValue != oldWidget.initialValue) {
-      _selectedRole = widget.initialValue;
-    }
-  }
+  final UserRole selectedRole;
+  final ValueChanged<UserRole> onChanged;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return DropdownButtonFormField<String>(
-      initialValue: _selectedRole,
-      decoration: InputDecoration(
-        labelText: widget.labelText,
-        helperText: 'Select your account type',
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please select a role.';
-        }
-        return null;
-      },
-      items: [
-        DropdownMenuItem(
-          value: 'artisan',
-          child: Row(
-            children: [
-              Icon(Icons.person, color: theme.colorScheme.primary),
-              const SizedBox(width: 12),
-              const Text('Artisan'),
-            ],
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: UserRole.values.map((role) {
+        final selected = role == selectedRole;
+        return ChoiceChip(
+          selected: selected,
+          label: Text(_label(role)),
+          selectedColor: AppColors.brandYellow,
+          backgroundColor: AppColors.softYellow,
+          labelStyle: TextStyle(
+            color: selected ? Colors.white : AppColors.textPrimary,
+            fontWeight: FontWeight.w700,
           ),
-        ),
-        DropdownMenuItem(
-          value: 'viewer',
-          child: Row(
-            children: [
-              Icon(Icons.visibility, color: theme.colorScheme.primary),
-              const SizedBox(width: 12),
-              const Text('Viewer'),
-            ],
-          ),
-        ),
-      ],
-      onChanged: (value) {
-        setState(() {
-          _selectedRole = value;
-        });
-        if (value != null) {
-          widget.onRoleChanged(value);
-        }
-      },
-      iconEnabledColor: theme.colorScheme.primary,
-      dropdownColor: theme.cardColor,
+          side: BorderSide.none,
+          onSelected: (_) => onChanged(role),
+        );
+      }).toList(),
     );
+  }
+
+  String _label(UserRole role) {
+    switch (role) {
+      case UserRole.admin:
+        return 'Admin';
+      case UserRole.buyer:
+        return 'Buyer';
+      case UserRole.seller:
+        return 'Seller';
+    }
   }
 }

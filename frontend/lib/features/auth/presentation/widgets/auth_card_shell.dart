@@ -1,49 +1,69 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
-import '../../domain/entities/app_user.dart';
+import '../../../../core/widgets/app_logo.dart';
 
-class RoleSelector extends StatelessWidget {
-  const RoleSelector({
+class AuthCardShell extends StatelessWidget {
+  const AuthCardShell({
     super.key,
-    required this.selectedRole,
-    required this.onChanged,
+    required this.title,
+    required this.subtitle,
+    required this.child,
   });
 
-  final UserRole selectedRole;
-  final ValueChanged<UserRole> onChanged;
+  final String title;
+  final String subtitle;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: UserRole.values.map((role) {
-        final selected = role == selectedRole;
-        return ChoiceChip(
-          selected: selected,
-          label: Text(_label(role)),
-          selectedColor: AppColors.brandYellow,
-          backgroundColor: AppColors.softYellow,
-          labelStyle: TextStyle(
-            color: selected ? Colors.white : AppColors.textPrimary,
-            fontWeight: FontWeight.w700,
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFFEFA),
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 380),
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(28, 26, 28, 26),
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: AppColors.stroke),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0x12000000),
+                      blurRadius: 24,
+                      offset: Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const AppLogo(compact: true),
+                    const SizedBox(height: 18),
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleLarge,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      subtitle,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 24),
+                    child,
+                  ],
+                ),
+              ),
+            ),
           ),
-          side: BorderSide.none,
-          onSelected: (_) => onChanged(role),
-        );
-      }).toList(),
+        ),
+      ),
     );
-  }
-
-  String _label(UserRole role) {
-    switch (role) {
-      case UserRole.admin:
-        return 'Admin';
-      case UserRole.buyer:
-        return 'Buyer';
-      case UserRole.seller:
-        return 'Seller';
-    }
   }
 }
